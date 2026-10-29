@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LokaLink Admin – Barangay San Jose</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="ad-body">
+
+<!-- Admin sign in -->
+<section class="ad-login" id="adLogin">
+  <div class="ad-login-card">
+    <div class="brand">
+      <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-6h6v6"/></svg></div>
+      <div>
+        <div class="brand-name">Loka<span>Link</span></div>
+        <div class="brand-sub">BARANGAY SAN JOSE</div>
+      </div>
+    </div>
+    <span class="ad-badge">STAFF ACCESS ONLY</span>
+    <h1>Administration Portal</h1>
+    <p class="lead">Sign in with your barangay staff account to manage resident requests.</p>
+    <form id="adLoginForm" novalidate>
+      <div class="field"><label for="adEmail">Email address</label><input id="adEmail" type="email" autocomplete="username"></div>
+      <div class="field"><label for="adPass">Password</label><input id="adPass" type="password" autocomplete="current-password"></div>
+      <div class="err" id="adErr"></div>
+      <button class="btn-full" type="submit" style="margin-top:18px">Sign In <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </form>
+    <p class="ad-demo">Demo account: <code>admin@sanjose.gov.ph</code> / <code>admin123</code></p>
+  </div>
+</section>
+
+<!-- Admin app -->
+<div class="ad-app" id="adApp" hidden>
+  <header class="ad-header">
+    <div class="ad-header-in">
+      <div class="brand">
+        <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-6h6v6"/></svg></div>
+        <div>
+          <div class="brand-name">Loka<span>Link</span></div>
+          <div class="brand-sub">ADMIN PORTAL</div>
+        </div>
+      </div>
+      <nav class="ad-nav">
+        <button class="on" data-view="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</button>
+        <button data-view="requests"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>Requests</button>
+        <button data-view="residents"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-3.6 3.1-6 7-6s7 2.4 7 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 15c2.4.8 4 2.6 4 6"/></svg>Residents</button>
+      </nav>
+      <div class="ad-user">
+        <div class="ad-user-meta"><b>Barangay Admin</b><small id="adUserEmail">admin@sanjose.gov.ph</small></div>
+        <span class="avatar">AD</span>
+        <button class="ad-logout" type="button"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg><span>Log out</span></button>
+      </div>
+    </div>
+  </header>
+
+  <section class="ad-hero"><div class="ad-hero-in">
+    <div class="ad-top">
+      <div><div class="ad-eyebrow">ADMIN PORTAL</div><h1 id="adTitle">Dashboard</h1><p id="adSub">Overview of resident requests and activity.</p></div>
+      <span class="ad-date" id="adDate"></span>
+    </div>
+  </div></section>
+
+  <main class="ad-main">
+    <!-- Dashboard -->
+    <section class="ad-view on" id="view-dashboard">
+      <div class="ad-banner" id="adBanner"></div>
+      <div class="ad-stats" id="adStats"></div>
+      <div class="ad-grid">
+        <div class="ad-panel">
+          <div class="ph"><h2>Recent requests</h2><button class="ad-btn ghost" data-goto="requests">View all</button></div>
+          <div class="ad-wrap"><table class="ad-table"><thead><tr><th>Reference</th><th>Resident</th><th>Service</th><th>Status</th></tr></thead><tbody id="adRecent"></tbody></table></div>
+        </div>
+        <div class="ad-panel">
+          <h2>Requests by service</h2>
+          <div class="ad-bars" id="adBars"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Requests -->
+    <section class="ad-view" id="view-requests">
+      <div class="ad-panel">
+        <div class="ph">
+          <h2>All requests</h2>
+          <div class="ad-tools">
+            <input id="rqSearch" type="search" placeholder="Search name or reference">
+            <select id="rqStatus"></select>
+          </div>
+        </div>
+        <div class="ad-wrap"><table class="ad-table"><thead><tr><th>Reference</th><th>Resident</th><th>Service</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody id="adRequests"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- Residents -->
+    <section class="ad-view" id="view-residents">
+      <div class="ad-panel">
+        <div class="ph">
+          <h2>Registered residents</h2>
+          <div class="ad-tools"><input id="rsSearch" type="search" placeholder="Search name, precinct or email"></div>
+        </div>
+        <div class="ad-wrap"><table class="ad-table"><thead><tr><th>Name</th><th>Precinct</th><th>Address</th><th>Email</th><th>Status</th><th></th></tr></thead><tbody id="adResidents"></tbody></table></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ad-footer">
+    <div><span>© 2026 LokaLink · Barangay San Jose Admin Portal</span><b>Barangay Administration Portal</b></div>
+  </footer>
+</div>
+
+<!-- Request details -->
+<div class="ovl" id="adModal" aria-hidden="true">
+  <div class="dialog" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="adMTitle">
+    <div class="m-head">
+      <div><div class="m-step gold" id="adMRef"></div><h3 id="adMTitle"></h3></div>
+      <button class="m-close ovl-close" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="auth-body" id="adMBody"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

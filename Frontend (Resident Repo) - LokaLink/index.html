@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LokaLink – Barangay San Jose E-Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header" id="header">
+  <div class="container">
+    <a href="#home" class="brand">
+      <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-6h6v6"/></svg></div>
+      <div>
+        <div class="brand-name">Loka<span>Link</span></div>
+        <div class="brand-sub">BARANGAY SAN JOSE</div>
+      </div>
+    </a>
+    <nav class="nav">
+      <a href="#home" class="active" data-target="home">Home</a>
+      <a href="#services" data-target="services">Services</a>
+      <a href="#" data-target="track" class="open-track">Track request</a>
+    </nav>
+    <div class="actions">
+      <a href="#" class="signin">Sign In</a>
+      <a href="#" class="btn-register"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Register Resident</a>
+      <div class="user-box" id="userBox">
+        <span class="avatar" id="userAv"></span>
+        <span class="user-name" id="userName"></span>
+        <button class="btn-logout" id="logoutBtn" type="button"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg><span>Log out</span></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="badge"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="6" r="2"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/><path d="M12 8v4M8 16l3-4M16 16l-3-4"/></svg></i>OFFICIAL RESIDENT E-SERVICES</div>
+    <h1>Barangay services,<br><span class="accent">without the long line.</span></h1>
+    <p>Request certificates, submit requirements, and follow every update online. Simple, transparent, and made for every resident.</p>
+    <div class="cta">
+      <a href="#" class="btn-primary open-modal">Request a document <b><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></b></a>
+      <a href="#" class="btn-outline open-track"><svg viewBox="0 0 24 24" style="font-size:15px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Track my request</a>
+    </div>
+    <div class="trust">
+      <span><i><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg></i>100% free services</span>
+      <span><i><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg></i>Verified status updates</span>
+      <span><i><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg></i>Secure resident data</span>
+    </div>
+  </div>
+</section>
+
+<!-- Services -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">CITIZEN'S CHARTER</div>
+        <h2>What do you need today?</h2>
+        <p>Choose a document to see its requirements and begin your request. All services are free for verified residents.</p>
+      </div>
+      <a href="#services" class="view-all">View all services <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="grid" id="serviceGrid"></div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how" id="track">
+  <div class="container">
+    <div>
+      <span class="pill">HOW IT WORKS</span>
+      <h2>From request to release, every step is visible.</h2>
+      <p>No repeated visits and no guessing. Receive updates as your document moves through the barangay office.</p>
+    </div>
+    <div class="steps" id="steps"></div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <span>© 2026 LokaLink · Barangay San Jose E-Services</span>
+    <a href="#">Barangay Administration Portal</a>
+  </div>
+</footer>
+
+<!-- Request a document modal -->
+<div id="modal" aria-hidden="true">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="m-head">
+      <div>
+        <div class="m-step" id="mStep">STEP 1 OF 3</div>
+        <h3 id="mTitle">Request a document</h3>
+      </div>
+      <button class="m-close" id="mClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="m-prog" id="mProg"><i></i><i></i><i></i></div>
+    <div class="m-body" id="mBody"></div>
+    <div class="m-foot" id="mFoot">
+      <button class="m-cancel" id="mBack">Cancel</button>
+      <button class="m-next" id="mNext">Continue <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- Track your request modal -->
+<div class="ovl" id="trackModal" aria-hidden="true">
+  <div class="dialog w660" role="dialog" aria-modal="true" aria-labelledby="trTitle">
+    <div class="m-head">
+      <div><div class="m-step gold">PUBLIC TRACKER</div><h3 id="trTitle">Track your request</h3></div>
+      <button class="m-close ovl-close" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="auth-body">
+      <form class="t-search" id="trackForm">
+        <div class="box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="trRef" placeholder="LL-2026-10482" autocomplete="off"></div>
+        <button class="m-next" type="submit">Check status</button>
+      </form>
+      <div id="trResult"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Sign in modal -->
+<div class="ovl" id="signinModal" aria-hidden="true">
+  <div class="dialog w620" role="dialog" aria-modal="true" aria-labelledby="siTitle">
+    <div class="m-head">
+      <div><div class="m-step gold">BARANGAY SAN JOSE</div><h3 id="siTitle">Welcome back</h3></div>
+      <button class="m-close ovl-close" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <form class="auth-body" id="signinForm" novalidate>
+      <div class="field"><label for="siEmail">Email address</label><input id="siEmail" type="email" autocomplete="email"></div>
+      <div class="field"><label for="siPass">Password</label><input id="siPass" type="password" autocomplete="current-password"><a href="#" class="forgot to-forgot">Forgot password?</a></div>
+      <div class="err" id="siErr"></div>
+      <button class="btn-full" type="submit" style="margin-top:18px">Sign In <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <p class="alt">New to LokaLink? <a href="#" class="to-register">Register Resident</a></p>
+    </form>
+  </div>
+</div>
+
+<!-- Forgot password modal -->
+<div class="ovl" id="forgotModal" aria-hidden="true">
+  <div class="dialog w620" role="dialog" aria-modal="true" aria-labelledby="fpTitle">
+    <div class="m-head">
+      <div><div class="m-step gold">BARANGAY SAN JOSE</div><h3 id="fpTitle">Reset your password</h3></div>
+      <button class="m-close ovl-close" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <form class="auth-body" id="forgotForm" novalidate>
+      <p style="font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:20px">Enter the email you registered with and we'll send you a link to reset your password.</p>
+      <div class="field"><label for="fpEmail">Email address</label><input id="fpEmail" type="email" autocomplete="email"></div>
+      <div class="err" id="fpErr"></div>
+      <div class="ok-msg" id="fpMsg"></div>
+      <button class="btn-full" type="submit" style="margin-top:18px">Send reset link <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <p class="alt">Remembered it? <a href="#" class="to-signin">Back to Sign In</a></p>
+    </form>
+  </div>
+</div>
+
+<!-- Register modal -->
+<div class="ovl" id="registerModal" aria-hidden="true">
+  <div class="dialog w620" role="dialog" aria-modal="true" aria-labelledby="rgTitle">
+    <div class="m-head">
+      <div><div class="m-step gold">BARANGAY SAN JOSE</div><h3 id="rgTitle">Register as a resident</h3></div>
+      <button class="m-close ovl-close" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <form class="auth-body" id="registerForm" novalidate>
+      <div class="row2">
+        <div class="field"><label for="rgFirst">First name</label><input id="rgFirst" autocomplete="given-name"></div>
+        <div class="field"><label for="rgLast">Last name</label><input id="rgLast" autocomplete="family-name"></div>
+      </div>
+      <div class="field"><label for="rgPrecinct">Precinct number</label><input id="rgPrecinct" placeholder="e.g. 0142-A"></div>
+      <div class="row2">
+        <div class="field"><label for="rgBirth">Birthday</label><input id="rgBirth" type="date"></div>
+        <div class="field"><label for="rgSex">Sex</label><select id="rgSex"><option value="">Select</option><option>Female</option><option>Male</option><option>Prefer not to say</option></select></div>
+      </div>
+      <div class="field"><label for="rgAddress">Complete Barangay San Jose address</label><textarea id="rgAddress"></textarea></div>
+      <div class="divider"></div>
+      <div class="field"><label for="rgEmail">Email address</label><input id="rgEmail" type="email" autocomplete="email"></div>
+      <div class="field"><label for="rgPass">Password</label><input id="rgPass" type="password" autocomplete="new-password"><p class="hint">Use at least 8 characters.</p></div>
+      <div class="err" id="rgErr"></div>
+      <button class="btn-full" type="submit" style="margin-top:18px">Create resident account <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <p class="alt">Already registered? <a href="#" class="to-signin">Sign In</a></p>
+    </form>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
