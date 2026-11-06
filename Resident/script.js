@@ -201,8 +201,8 @@ $(function () {
   $(document).on('keydown', function (e) { if (e.key === 'Escape') closeOvl(); });
 
   // Openers
-  $('.signin, .to-signin').on('click', function (e) { e.preventDefault(); openOvl('#signinModal'); $('#siEmail').focus(); });
-  $('.btn-register, .to-register').on('click', function (e) { e.preventDefault(); openOvl('#registerModal'); $('#rgFirst').focus(); });
+  $(document).on('click', '.signin, .to-signin', function (e) { e.preventDefault(); openOvl('#signinModal'); $('#siEmail').focus(); });
+  $(document).on('click', '.btn-register, .to-register', function (e) { e.preventDefault(); openOvl('#registerModal'); $('#rgFirst').focus(); });
   $('.open-track').on('click', function (e) { e.preventDefault(); openTrack('LL-2026-10482'); });
   $('#rgBirth').attr('max', new Date().toISOString().split('T')[0]);
 
@@ -284,16 +284,86 @@ $(function () {
     e.preventDefault();
     var typed = $('#siEmail').val();
     openOvl('#forgotModal');
-    $('#fpEmail').val(typed).focus();
-    $('#fpErr, #fpMsg').text('');
+    // reset the form to step 1
+    $('#fpEmail').val(typed);
+    $('#fpCode').val('');
+    $('#fpNewPass').val('');
+    $('#fpConfirmPass').val('');
+    $('#fpErr, #fpMsg, #fpCodeHint').text('');
+    $('#fpCodeRow, #fpNewPassRow, #fpSubmitBtn').hide();
+    $('#fpEmail').prop('disabled', false);
+    $('#fpSendCode').prop('disabled', false).text('Send code');
+    $('#fpEmail').focus();
   });
+
+  // Step 1 — Send code via EmailJS
+  var fpGeneratedCode = '';
+  $('#fpSendCode').on('click', function () {
+    var email = $.trim($('#fpEmail').val());
+    $('#fpErr').text(''); $('#fpMsg').text('');
+    if (!/^\S+@\S+\.\S+$/.test(email)) return $('#fpErr').text('Enter a valid email address.');
+
+    // Generate 6-digit code
+    fpGeneratedCode = ('000000' + Math.floor(Math.random() * 1000000)).slice(-6);
+
+    var $btn = $(this);
+    $btn.prop('disabled', true).text('Sending...');
+
+    emailjs.send('service_wloauwj', 'template_w1q46on', {
+      to_email: email,
+      code: fpGeneratedCode
+    }).then(function () {
+      $('#fpEmail').prop('disabled', true);
+      $btn.text('Sent ✓');
+      $('#fpCodeRow').show();
+      $('#fpCodeHint').text('A 6-digit code was sent to ' + email + '. Check your inbox.');
+      $('#fpMsg').text('Code sent! Check your email inbox.');
+      $('#fpCode').focus();
+    }, function (error) {
+      $btn.prop('disabled', false).text('Send code');
+      $('#fpErr').text('Failed to send code. Please try again. (' + (error.text || 'Unknown error') + ')');
+    });
+  });
+
+  // Step 2 — Verify code
+  $('#fpVerifyCode').on('click', function () {
+    var entered = $.trim($('#fpCode').val());
+    $('#fpErr').text(''); $('#fpMsg').text('');
+    if (!entered) return $('#fpErr').text('Enter the verification code.');
+    if (entered !== fpGeneratedCode) return $('#fpErr').text('Incorrect code. Please check your email and try again.');
+
+    // Code correct — show new password fields
+    $('#fpCode').prop('disabled', true);
+    $('#fpVerifyCode').prop('disabled', true).text('Verified ✓');
+    $('#fpNewPassRow').show();
+    $('#fpSubmitBtn').show();
+    $('#fpMsg').text('Code verified! Set your new password below.');
+    $('#fpNewPass').focus();
+  });
+
+  // Step 3 — Save new password
   $('#forgotForm').on('submit', function (e) {
     e.preventDefault();
-    var email = $.trim($('#fpEmail').val());
-    $('#fpMsg').text('');
-    if (!/^\S+@\S+\.\S+$/.test(email)) return $('#fpErr').text('Enter a valid email address.');
+    var newPass = $('#fpNewPass').val(), confirm = $('#fpConfirmPass').val();
+    $('#fpErr').text(''); $('#fpMsg').text('');
+    if (!$('#fpSubmitBtn').is(':visible')) return; // guard: only process if on step 3
+    if (!newPass) return $('#fpErr').text('Enter a new password.');
+    if (newPass.length < 8) return $('#fpErr').text('Password must be at least 8 characters.');
+    if (newPass !== confirm) return $('#fpErr').text('Passwords do not match.');
+
+    // Update the stored account password (frontend-only simulation)
+    var email = $.trim($('#fpEmail').val()).toLowerCase();
+    if (accounts[email]) accounts[email].pass = newPass;
+
+    $('#fpSubmitBtn').prop('disabled', true);
+    $('#fpMsg').text('Password updated! You can now sign in with your new password.');
     $('#fpErr').text('');
-    $('#fpMsg').text('If an account exists for ' + email + ', a password reset link has been sent. Please check your inbox.');
+    setTimeout(function () {
+      closeOvl();
+      openOvl('#signinModal');
+      $('#siEmail').val(email).focus();
+      toast('Password updated. Sign in with your new password.');
+    }, 1800);
   });
 
   // Sign in
@@ -312,21 +382,66 @@ $(function () {
   $('#registerForm').on('submit', function (e) {
     e.preventDefault();
     var f = {
-      first: $.trim($('#rgFirst').val()), last: $.trim($('#rgLast').val()),
+      first:    $.trim($('#rgFirst').val()),
+      last:     $.trim($('#rgLast').val()),
       precinct: $.trim($('#rgPrecinct').val()),
-      birth: $('#rgBirth').val(), sex: $('#rgSex').val(), address: $.trim($('#rgAddress').val()),
-      email: $.trim($('#rgEmail').val()), pass: $('#rgPass').val()
+      birth:    $('#rgBirth').val(),
+      sex:      $('#rgSex').val(),
+      address:  $.trim($('#rgAddress').val()),
+      email:    $.trim($('#rgEmail').val()),
+      pass:     $('#rgPass').val(),
+      confirm:  $('#rgConfirm').val()
     }, msg = '';
-    if (!f.first || !f.last || !f.precinct || !f.birth || !f.sex || !f.address || !f.email || !f.pass) msg = 'Please fill in every field.';
+
+    // Field-level validation
+    if (!f.first || !f.last)      msg = 'Enter your first and last name.';
+    else if (!f.precinct)         msg = 'Enter your precinct number.';
+    else if (!f.birth)            msg = 'Enter your birthday.';
+    else if (!f.sex)              msg = 'Select your sex.';
+    else if (!f.address)          msg = 'Enter your complete barangay address.';
+    else if (!f.email)            msg = 'Enter your email address.';
     else if (!/^\S+@\S+\.\S+$/.test(f.email)) msg = 'Enter a valid email address.';
-    else if (f.pass.length < 8) msg = 'Password must be at least 8 characters.';
+    else if (accounts[f.email.toLowerCase()]) msg = 'An account with that email already exists. Try signing in instead.';
+    else if (!f.pass)             msg = 'Enter a password.';
+    else if (f.pass.length < 8)   msg = 'Password must be at least 8 characters.';
+    else if (f.pass !== f.confirm) msg = 'Passwords do not match. Please re-enter.';
+
     $('#rgErr').text(msg);
     if (msg) return;
-    // Save the account, sign the new resident in and use their details in the request popup
-    accounts[f.email.toLowerCase()] = { name: f.first + ' ' + f.last, email: f.email, precinct: f.precinct, address: f.address };
+
+    // Save the account and sign the new resident in
+    accounts[f.email.toLowerCase()] = {
+      name: f.first + ' ' + f.last,
+      email: f.email,
+      precinct: f.precinct,
+      address: f.address
+    };
     setUser(accounts[f.email.toLowerCase()]);
-    this.reset(); closeOvl();
-    toast('Account created. Welcome, ' + f.first + '!');
+    this.reset();
+
+    // Show a brief success screen before closing
+    var $form = $(this);
+    $form.hide();
+    var $success = $('<div class="done" style="padding:10px 0 0">' +
+      '<div class="tick"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg></div>' +
+      '<h4>Account created!</h4>' +
+      '<p>Welcome to LokaLink, <b>' + esc(f.first) + '</b>. You are now signed in and can request barangay documents.</p>' +
+      '<button class="btn-full rg-done" type="button" style="max-width:260px;margin:24px auto 0">Get started ' +
+        '<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>' +
+      '</div>');
+    $form.parent().append($success);
+    setTimeout(function () {
+      $success.remove();
+      $form.show();
+      closeOvl();
+      toast('Account created. Welcome, ' + f.first + '!');
+    }, 3500);
+  });
+
+  // "Get started" button inside the register success screen
+  $(document).on('click', '.rg-done', function () {
+    closeOvl();
+    toast('Welcome to LokaLink, ' + user.name.split(' ')[0] + '!');
   });
 
   // Sample tracking records (requests submitted in the popup are added here too)
