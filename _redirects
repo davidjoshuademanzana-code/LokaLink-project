@@ -1,0 +1,3 @@
+/admin    /Admin/admin.html    200
+/admin/*  /Admin/admin.html    200
+/*        /Resident/index.html 200
