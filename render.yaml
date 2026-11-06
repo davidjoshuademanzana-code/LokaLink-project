@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: lokalink
+    env: static
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /admin
+        destination: /Admin/admin.html
+      - type: rewrite
+        source: /admin/*
+        destination: /Admin/admin.html
+      - type: rewrite
+        source: /*
+        destination: /Resident/index.html
